@@ -29,12 +29,14 @@ import de.lmu.ifi.dbs.elki.utilities.random.RandomFactory;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.BestOfMultipleKMeans;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.quality.KMeansQualityMeasure;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.quality.WithinClusterMeanDistanceQualityMeasure;
+import de.lmu.ifi.dbs.elki.datasource.MultipleObjectsBundleDatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.bundle.MultipleObjectsBundle;
 import de.lmu.ifi.dbs.elki.datasource.parser.ArffParser;
 import de.lmu.ifi.dbs.elki.evaluation.clustering.internal.EvaluateSimplifiedSilhouette;
 import de.lmu.ifi.dbs.elki.evaluation.clustering.internal.NoiseHandling;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 //import de.lmu.ifi.dbs.elki.datasource.parser;
 import weka.core.Instances;
@@ -56,7 +58,7 @@ public class ClustererELKI {
     // Set the logging level to statistics:
     LoggingConfiguration.setStatistics();
     
-    String trainData = RunEnsembleSuppliedTestSet.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "hcr_hashlex_testset.arff"; 
+    String trainData = RunEnsembleSuppliedTestSet.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "mastite.arff"; 
 
     // https://elki-project.github.io/releases/current/doc/de/lmu/ifi/dbs/elki/datasource/parser/NumberVectorLabelParser.html
     // NumberVectorLabelParser
@@ -66,7 +68,7 @@ public class ClustererELKI {
     
     InputStream dataARFF = new FileInputStream(trainData);
     
-    ArffParser ap = new ArffParser(Pattern.quote("ID"), Pattern.quote("Label"));
+    ArffParser ap = new ArffParser("", "class");
     
     MultipleObjectsBundle d = ap.parse(dataARFF);
     
@@ -76,18 +78,19 @@ public class ClustererELKI {
     
     // Generate a random data set.
     // Note: ELKI has a nice data generator class, use that instead.
-    double[][] data = new double[1000][2];
-    for(int i = 0; i < data.length; i++) {
-      for(int j = 0; j < data[i].length; j++) {
-        data[i][j] = Math.random();
-      }
-    }
+    //double[][] data = new double[1000][2];
+    //for(int i = 0; i < data.length; i++) {
+    //  for(int j = 0; j < data[i].length; j++) {
+    //    data[i][j] = Math.random();
+    //  }
+    //}
 
     // Adapter to load data from an existing array.
     
    // DatabaseConnection dbc = new ArrayAdapterDatabaseConnection(d.getColumn(0));
     
-    DatabaseConnection dbc = new ArrayAdapterDatabaseConnection(data);
+    DatabaseConnection dbc = new MultipleObjectsBundleDatabaseConnection(d);
+    //dbc.loadData(d); // = new ArrayAdapterDatabaseConnection(data);
     // Create a database (which may contain multiple relations!)
     Database db = new StaticArrayDatabase(dbc, null);
     // Load the data into the database (do NOT forget to initialize...)
@@ -110,7 +113,7 @@ public class ClustererELKI {
     
     KMeansQualityMeasure qm = new WithinClusterMeanDistanceQualityMeasure() ;
             
-    BestOfMultipleKMeans<NumberVector,KMeansModel> bmr = new BestOfMultipleKMeans<>(10, km, qm);
+    BestOfMultipleKMeans<NumberVector,KMeansModel> bmr = new BestOfMultipleKMeans<>(5000, km, qm);
     
     
     
@@ -120,7 +123,7 @@ public class ClustererELKI {
     
     double result = ss.evaluateClustering(db, rel, c);
     
-   
+    System.out.println("Valor da Silhueta : " + String.format("%.2f", result));
 
             
     
@@ -138,7 +141,7 @@ public class ClustererELKI {
       // K-means will name all clusters "Cluster" in lack of noise support:
       System.out.println("#" + i + ": " + clu.getNameAutomatic());
       System.out.println("Size: " + clu.size());
-      System.out.println("Center: " + clu.getModel().getPrototype().toString());
+      System.out.println("Center: " + Arrays.toString(clu.getModel().getPrototype()));
       // Iterate over objects:
       System.out.print("Objects: ");
       for(DBIDIter it = clu.getIDs().iter(); it.valid(); it.advance()) {
