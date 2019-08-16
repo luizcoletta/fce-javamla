@@ -19,7 +19,7 @@ import weka.core.converters.ConverterUtils;
 public class SamplingData {
     
     
-    public void Subsampling(String dataPath, String nameData, int sizeTrainSet) throws Exception{
+    public static void Subsampling(String dataPath, String nameData, int sizeTrainSet) throws Exception{
         
         boolean changeSets = true;
         //double txSizeValSet1 = 0.5;
@@ -104,6 +104,15 @@ public class SamplingData {
         Arff2Matrix.salvar("files_" + nameData + "/test" + foldNumber + ".dat", Arff2Matrix.carregar("files_" + nameData + "/test" + foldNumber + ".arff"),false);
     
     
+    }
+    
+    public static void main (String args[]) throws Exception{ 
+        
+        
+        String dPath = SamplingData.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "mastite.arff"; 
+        
+        Subsampling(dPath, "mastite", 6);
+        
     }
     
 }
