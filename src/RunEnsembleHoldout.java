@@ -35,11 +35,34 @@ public class RunEnsembleHoldout {
 	//*************************************************************************
 	public static void main (String args[])
 	{   
-		String data = "/mnt/Backup/Storage/Data/caltech6vgg16.arff"; 
+		String data = "/mnt/Backup/DATA/ceratocystis10.arff"; 
 		String path_results = "results/";  
+                
+                int vetIdade[] = new int[5];
+                vetIdade[0] = 5;
+                vetIdade[1] = 9;
+                vetIdade[2] = 19;
+                vetIdade[3] = 31;
+                vetIdade[4] = 75;
+                
+                for (int i=0; i<5; i++){         
+                    System.out.println(vetIdade[i]);
+                }
+                
+                String matConceito[][] = {{"A", "A", "B"},
+                                          {"A", "B", "B"}, 
+                                          {"C", "B", "A"},
+                                          {"C", "C", "B"}};
+                
+                for (int i=0; i<4; i++){
+                    for (int j=0; j<3; j++){ 
+                    System.out.println(matConceito[i][j]);
+                }}
 
-		int sizeTrainSet = 120;// the number of objects in the validation set (keeping stratification)
-		int fold = 1;	       // current fold (if fold = 0 it is used only one fold (train and test are the same set)) 
+
+
+		int sizeTrainSet = 814;// the number of objects in the validation set (keeping stratification)
+		int fold = 5;	       // current fold (if fold = 0 it is used only one fold (train and test are the same set)) 
 
 		// CLASSIFIER ENSEMBLE
 		ArrayList<Integer> typeClaEns = new ArrayList<Integer>();
@@ -63,12 +86,8 @@ public class RunEnsembleHoldout {
 		//  0: the train set will contain all classes
 		// >0: the train set will not contain the class of this index
 		ArrayList<Integer> missingClasses = new ArrayList<Integer>(); 
-		missingClasses.add(2); // class index
-                missingClasses.add(3);
-                missingClasses.add(4);
-                missingClasses.add(5); 
-                missingClasses.add(6);
-
+		missingClasses.add(1); // class index
+                
 		//  0: for testing (to build the test and train sets); 
 		//  1: for validation (fold 1 of 2 from labeled objects - the dataset's name appears with "R");
 		//  2: for validation (fold 2 of 2 from labeled objects - the dataset's name appears with "R");
@@ -240,27 +259,35 @@ public class RunEnsembleHoldout {
 
                             ArffSaver saverTrain = new ArffSaver();
                             saverTrain.setInstances(iTrain);
-                            saverTrain.setFile(new File("files_" + nameData + "/iTrain" + strni + ".arff"));
+                            //saverTrain.setFile(new File("files_" + nameData + "/iTrain" + strni + ".arff"));
+                            saverTrain.setFile(new File("files_" + nameData + "/iTrain" + iter + ".arff"));
                             saverTrain.writeBatch();
 
                             ArffSaver saverTest = new ArffSaver();
                             saverTest.setInstances(iTest);
-                            saverTest.setFile(new File("files_" + nameData + "/iTest" + strni + ".arff"));
+                            //saverTest.setFile(new File("files_" + nameData + "/iTest" + strni + ".arff"));
+                            saverTest.setFile(new File("files_" + nameData + "/iTest" + iter + ".arff"));
                             saverTest.writeBatch();
 
                             ArffSaver saverNewInst = new ArffSaver();
                             saverNewInst.setInstances(iNInst);
-                            saverNewInst.setFile(new File("files_" + nameData + "/iNewInst" + strni + ".arff"));
+                            //saverNewInst.setFile(new File("files_" + nameData + "/iNewInst" + strni + ".arff"));
+                            saverNewInst.setFile(new File("files_" + nameData + "/iNewInst" + iter + ".arff"));
                             saverNewInst.writeBatch();
 
-                            ARFFToMatlab.salvar("files_" + nameData + "/iTrain" + strni + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iTrain" + strni + ".arff"),false);
-                            ARFFToMatlab.salvar("files_" + nameData + "/iTest" + strni + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iTest" + strni + ".arff"),false);
-                            ARFFToMatlab.salvar("files_" + nameData + "/iNewInst" + strni + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iNewInst" + strni + ".arff"),false);
+                            //ARFFToMatlab.salvar("files_" + nameData + "/iTrain" + strni + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iTrain" + strni + ".arff"),false);
+                            //ARFFToMatlab.salvar("files_" + nameData + "/iTest" + strni + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iTest" + strni + ".arff"),false);
+                            //ARFFToMatlab.salvar("files_" + nameData + "/iNewInst" + strni + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iNewInst" + strni + ".arff"),false);
+                            ARFFToMatlab.salvar("files_" + nameData + "/iTrain" + iter + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iTrain" + iter + ".arff"),false);
+                            ARFFToMatlab.salvar("files_" + nameData + "/iTest" + iter + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iTest" + iter + ".arff"),false);
+                            ARFFToMatlab.salvar("files_" + nameData + "/iNewInst" + iter + ".dat",ARFFToMatlab.carregar("files_" + nameData + "/iNewInst" + iter + ".arff"),false);
 
                             if ((trainTest == 0) && (strni.equals("1"))){
-                               ARFFToMatlab.salvar("files_" + nameData + "/labeledObjects.dat",ARFFToMatlab.carregar("files_" + nameData + "/iNewInst" + strni + ".arff"),false);
+                               //ARFFToMatlab.salvar("files_" + nameData + "/labeledObjects.dat",ARFFToMatlab.carregar("files_" + nameData + "/iNewInst" + strni + ".arff"),false);
+                               ARFFToMatlab.salvar("files_" + nameData + "/labeledObjects.dat",ARFFToMatlab.carregar("files_" + nameData + "/iNewInst" + iter + ".arff"),false);
                             }
-                            if (strategyCluEns == 3){ ARFFToMatlab.salvar("clustering/iTest.dat",ARFFToMatlab.carregar("files_" + nameData + "/iTest" + strni + ".arff"),false); }
+                            //if (strategyCluEns == 3){ ARFFToMatlab.salvar("clustering/iTest.dat",ARFFToMatlab.carregar("files_" + nameData + "/iTest" + strni + ".arff"),false); }
+                            if (strategyCluEns == 3){ ARFFToMatlab.salvar("clustering/iTest.dat",ARFFToMatlab.carregar("files_" + nameData + "/iTest" + iter + ".arff"),false); }
                     }
 
                     AnalysingMemory(printResults);
@@ -359,9 +386,15 @@ public class RunEnsembleHoldout {
                                                         if (sizeTrainSet >= 10){
                                                                 TfoldVS = (int) Math.ceil(iTrainSVM.numInstances()/Math.round(sizeTrainSet*0.3));
                                                         }
-                                                        if (TfoldVS == 0){
+                                                        if (TfoldVS < 2){
                                                             TfoldVS = 2;
                                                         }
+                                                        // FIXED TO 2 FOLDS JUST FOR THE CERATOCYSTIS DATA!
+                                                        TfoldVS = 2;
+                                                        System.out.println("*** Number Instances: " + iTrainSVM.numInstances());
+                                                        System.out.println("*** Size Training Set: " + sizeTrainSet);
+                                                        System.out.println("*** Total Folds Val.: " + TfoldVS);
+                                                        System.out.println("*** Missing Class: " + strmc + " - Fold: " + fold + " - Iteration: " + iter);                                   
                                                         CrossValidationFolds cvft = new CrossValidationFolds(iTrainSVM, TfoldVS, 0);
                                                         iTrainSVM = cvft.getTestData(0); 
                                                         iTestSVM = cvft.getTrainData(0);
