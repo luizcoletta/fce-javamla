@@ -47,63 +47,59 @@ public class SamplingData {
 
         GenTrainTestSets cvf = new GenTrainTestSets(dataPath, Tfold, 0);
         
-        int foldNumber = 1;
-        
-        // DAQUI PRA FRENTE TEM QUE TER UM FOR PARA ITERAR 'foldNumber'
-
-        // getting the train and test sets from a particular fold ('foldNumber') of {1, 2, ..., Tfold}
-        if (changeSets){
-            iTrain = cvf.getTestData(foldNumber-1); // switched to have less objects in train set than test set (iTrain = cvf.getTrainData(fold-1);)
-            iTest = cvf.getTrainData(foldNumber-1); // switched to have more objects in test set than train set (iTest = cvf.getTestData(fold-1);)
-        }else{
-            iTrain = cvf.getTrainData(foldNumber-1);
-            iTest = cvf.getTestData(foldNumber-1);
-        }
-
-        // if validation the train set is divided to create a validation set
-        /* if (trainTest > 0){
-            // to obtain the correct number of folds for the required number of objects in the train set
-            int TfoldVS = -1;
-            if (sizeTrainSet < 10){
-                TfoldVS = (int) Math.ceil(iTrain.numInstances()/(Math.round(iTrain.numInstances()*txSizeValSet1)-1));
-            }
-            if (sizeTrainSet >= 10){
-                TfoldVS = (int) Math.ceil(iTrain.numInstances()/(Math.round(iTrain.numInstances()*txSizeValSet2)-1));
-            }
-            GenTrainTestSets cvft = new GenTrainTestSets(iTrain, TfoldVS, 0);
-
+        for(int foldNumber = 1; foldNumber < Tfold; foldNumber++){
+            // getting the train and test sets from a particular fold ('foldNumber') of {1, 2, ..., Tfold}
             if (changeSets){
-                iTrain = cvft.getTestData(trainTest-1); 
-                iTest = cvft.getTrainData(trainTest-1);
+                iTrain = cvf.getTestData(foldNumber-1); // switched to have less objects in train set than test set (iTrain = cvf.getTrainData(fold-1);)
+                iTest = cvf.getTrainData(foldNumber-1); // switched to have more objects in test set than train set (iTest = cvf.getTestData(fold-1);)
             }else{
-                iTrain = cvft.getTrainData(trainTest-1); 
-                iTest = cvft.getTestData(trainTest-1);						
+                iTrain = cvf.getTrainData(foldNumber-1);
+                iTest = cvf.getTestData(foldNumber-1);
             }
-        }*/
 
-        iTrain.setClassIndex(iTrain.numAttributes()-1);
-        iTest.setClassIndex(iTrain.numAttributes()-1);
+            // if validation the train set is divided to create a validation set
+            /* if (trainTest > 0){
+                // to obtain the correct number of folds for the required number of objects in the train set
+                int TfoldVS = -1;
+                if (sizeTrainSet < 10){
+                    TfoldVS = (int) Math.ceil(iTrain.numInstances()/(Math.round(iTrain.numInstances()*txSizeValSet1)-1));
+                }
+                if (sizeTrainSet >= 10){
+                    TfoldVS = (int) Math.ceil(iTrain.numInstances()/(Math.round(iTrain.numInstances()*txSizeValSet2)-1));
+                }
+                GenTrainTestSets cvft = new GenTrainTestSets(iTrain, TfoldVS, 0);
 
-        // ------------------------------------------------------------
-        // CREATING FILES
-        // ------------------------------------------------------------		
+                if (changeSets){
+                    iTrain = cvft.getTestData(trainTest-1); 
+                    iTest = cvft.getTrainData(trainTest-1);
+                }else{
+                    iTrain = cvft.getTrainData(trainTest-1); 
+                    iTest = cvft.getTestData(trainTest-1);						
+                }
+            }*/
 
-        (new File("files_" + nameData)).mkdirs();
+            iTrain.setClassIndex(iTrain.numAttributes()-1);
+            iTest.setClassIndex(iTrain.numAttributes()-1);
 
-        ArffSaver saverTrain = new ArffSaver();
-        saverTrain.setInstances(iTrain);
-        saverTrain.setFile(new File("files_" + nameData + "/train" + foldNumber + ".arff"));
-        saverTrain.writeBatch();
+            // ------------------------------------------------------------
+            // CREATING FILES
+            // ------------------------------------------------------------		
 
-        ArffSaver saverTest = new ArffSaver();
-        saverTest.setInstances(iTest);
-        saverTest.setFile(new File("files_" + nameData + "/test" + foldNumber + ".arff"));
-        saverTest.writeBatch();
+            (new File("files_" + nameData)).mkdirs();
 
-        Arff2Matrix.salvar("files_" + nameData + "/train" + foldNumber + ".dat", Arff2Matrix.carregar("files_" + nameData + "/train" + foldNumber + ".arff"),false);
-        Arff2Matrix.salvar("files_" + nameData + "/test" + foldNumber + ".dat", Arff2Matrix.carregar("files_" + nameData + "/test" + foldNumber + ".arff"),false);
-    
-    
+            ArffSaver saverTrain = new ArffSaver();
+            saverTrain.setInstances(iTrain);
+            saverTrain.setFile(new File("files_" + nameData + "/train" + foldNumber + ".arff"));
+            saverTrain.writeBatch();
+
+            ArffSaver saverTest = new ArffSaver();
+            saverTest.setInstances(iTest);
+            saverTest.setFile(new File("files_" + nameData + "/test" + foldNumber + ".arff"));
+            saverTest.writeBatch();
+
+            Arff2Matrix.salvar("files_" + nameData + "/train" + foldNumber + ".dat", Arff2Matrix.carregar("files_" + nameData + "/train" + foldNumber + ".arff"),false);
+            Arff2Matrix.salvar("files_" + nameData + "/test" + foldNumber + ".dat", Arff2Matrix.carregar("files_" + nameData + "/test" + foldNumber + ".arff"),false);
+        }
     }
     
     public static void main (String args[]) throws Exception{ 
