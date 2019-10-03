@@ -38,30 +38,7 @@ public class RunEnsembleHoldout {
 		String data = "/mnt/Backup/DATA/ceratocystis10.arff"; 
 		String path_results = "results/";  
                 
-                int vetIdade[] = new int[5];
-                vetIdade[0] = 5;
-                vetIdade[1] = 9;
-                vetIdade[2] = 19;
-                vetIdade[3] = 31;
-                vetIdade[4] = 75;
-                
-                for (int i=0; i<5; i++){         
-                    System.out.println(vetIdade[i]);
-                }
-                
-                String matConceito[][] = {{"A", "A", "B"},
-                                          {"A", "B", "B"}, 
-                                          {"C", "B", "A"},
-                                          {"C", "C", "B"}};
-                
-                for (int i=0; i<4; i++){
-                    for (int j=0; j<3; j++){ 
-                    System.out.println(matConceito[i][j]);
-                }}
-
-
-
-		int sizeTrainSet = 814;// the number of objects in the validation set (keeping stratification)
+                int sizeTrainSet = 814;// the number of objects in the validation set (keeping stratification)
 		int fold = 5;	       // current fold (if fold = 0 it is used only one fold (train and test are the same set)) 
 
 		// CLASSIFIER ENSEMBLE
@@ -491,7 +468,7 @@ public class RunEnsembleHoldout {
                                 //initial and final k come from the number of classes and instances respectively.
                                 for (int i = iTrain.numClasses(); i<=Math.round(Math.sqrt(iTest.numInstances())); ++i){nClusters.add(i);}					
 
-                                ClustererOMRThreadNOTUSED cluOMR = new ClustererOMRThreadNOTUSED(nClusters, 20, iTest);
+                                ClustererOMRThread cluOMR = new ClustererOMRThread(nClusters, 20, iTest);
                                 bestK = cluOMR.Run();
                                 bestQuality = cluOMR.getSSBestQuality();
 

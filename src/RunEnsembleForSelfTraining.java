@@ -570,7 +570,7 @@ public class RunEnsembleForSelfTraining {
 				//initial and final k come from the number of classes and instances respectively.
 				for (int i = iTrain.numClasses(); i<=Math.round(Math.sqrt(iTest.numInstances())); ++i){nClusters.add(i);}					
 
-				ClustererOMRThreadNOTUSED cluOMR = new ClustererOMRThreadNOTUSED(nClusters, 20, iTest);
+				ClustererOMRThread cluOMR = new ClustererOMRThread(nClusters, 20, iTest);
 				bestK = cluOMR.Run();
 				bestQuality = cluOMR.getSSBestQuality();
 

@@ -21,6 +21,11 @@ public class SamplingData {
     
     public static void Subsampling(String dataPath, String nameData, int sizeTrainSet) throws Exception{
         
+        //// AQUI TEM QUE PEGAR O .ARFF QUE CONTEM AS PRIMEIRAS COLUNAS COMO ATRIBUTOS INDEXADORES
+        /// OBTER OS DIFERENTES ARQUIVOS DE TREINO E TESTE
+        /// DEPOIS GERAR OUTROS ARQUIVOS APENAS COM AS COLUNAS DE INDEXADORES 
+        /// AI REMOVER OS ATRIBUTOS INDEXADORES DO CONJUNTO ORIGINAL
+        
         boolean changeSets = true;
         //double txSizeValSet1 = 0.5;
         //double txSizeValSet2 = 0.5;

@@ -1,0 +1,23 @@
+@relation mastite
+
+@attribute IRTU numeric
+@attribute IRTV numeric
+@attribute IRTE numeric
+@attribute CMT numeric
+@attribute RT numeric
+@attribute TBC numeric
+@attribute FAT numeric
+@attribute PROTEIN numeric
+@attribute LACTOSE numeric
+@attribute TS numeric
+@attribute SNF numeric
+@attribute PLT numeric
+@attribute class {mastite,normal}
+
+@data
+34.3,36.15,34.96,5,37.8,127,3.7,3.05,4.43,12.14,8.44,25,normal
+33.97,33.44,33.35,2,38,16,4.57,3.09,4.63,13.34,8.77,23,normal
+38.1,38.35,35.11,5,38.6,30,4.32,3.89,4.28,13.66,9.34,12,mastite
+37.55,37.79,36.23,5,38.2,17,4.29,3.56,4.31,13.18,8.89,21,mastite
+39,38.14,36.69,4,37.7,37,4.67,2.87,4.14,12.69,8.02,20,mastite
+35.91,36.2,36.55,4,38.1,32,3.7,2.78,4.58,11.98,8.28,35,mastite

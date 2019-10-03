@@ -15,6 +15,8 @@ public class ClustererOMRThread {
 	private Instances clusters = null;
 	private SimpleKMeans bestModel = null;
 	private int bestK = -1;
+        
+        private int[] cluLabels = null;
 	
 	public ClustererOMRThread(ArrayList<Integer> nClusters, int nInit, Instances data){
 		this.nClusters = nClusters;
@@ -49,6 +51,7 @@ public class ClustererOMRThread {
 				clusters = t.getClusters();
 				bestModel = new SimpleKMeans();
 				bestModel = t.getBestModel();
+                                
 			}
 		}  
 		
