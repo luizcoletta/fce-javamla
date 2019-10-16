@@ -35,7 +35,9 @@ import de.lmu.ifi.dbs.elki.datasource.parser.ArffParser;
 import de.lmu.ifi.dbs.elki.evaluation.clustering.internal.EvaluateSimplifiedSilhouette;
 import de.lmu.ifi.dbs.elki.evaluation.clustering.internal.NoiseHandling;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 //import de.lmu.ifi.dbs.elki.datasource.parser;
@@ -54,12 +56,23 @@ public class ClustererELKI {
    * 
    * @param args Command line parameters (not supported)
    */
-  public static void main(String[] args) throws Exception {
-    // Set the logging level to statistics:
+  public static void main(String[] args) throws FileNotFoundException  {
+      
+      String trainData = RunEnsembleSuppliedTestSet.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "mastite.arff"; 
+      
+      ArrayList<Integer> aDists = new ArrayList<Integer>();
+      
+      
+      
+      RunClustering(trainData, aDists);
+      
+  }
+  
+  public static void RunClustering(String trainData, ArrayList<Integer> aDists) throws FileNotFoundException{
+      
+      // Set the logging level to statistics:
     LoggingConfiguration.setStatistics();
     
-    String trainData = RunEnsembleSuppliedTestSet.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "mastite.arff"; 
-
     // https://elki-project.github.io/releases/current/doc/de/lmu/ifi/dbs/elki/datasource/parser/NumberVectorLabelParser.html
     // NumberVectorLabelParser
     
@@ -99,25 +112,42 @@ public class ClustererELKI {
     Relation<NumberVector> rel = db.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
     // We know that the ids must be a continuous range:
     DBIDRange ids = (DBIDRange) rel.getDBIDs();
+    
+    // ACIMA É PARA PEGAR OS DADOS DE UM ARQUIVO ARFF (OBJETOS rel e db)
+    
+    // VOCÊ DEVE MEXER:
 
     // K-means should be used with squared Euclidean (least squares):
+    
     SquaredEuclideanDistanceFunction dist = SquaredEuclideanDistanceFunction.STATIC;
+    if (aDists.get(0) == 1){
+        //SquaredEuclideanDistanceFunction dist = SquaredEuclideanDistanceFunction.STATIC;
+    }else{
+        
+    }
+    
     // Default initialization, using global random:
     // To fix the random seed, use: new RandomFactory(seed);
     RandomUniformGeneratedInitialMeans init = new RandomUniformGeneratedInitialMeans(RandomFactory.DEFAULT);
     
+    // VAI TER QUE PASSAR COMO PARAMETRO UM ARRAYLIST PARA ESCOLHER O ALGORITMO
+    // VAI TER QUE PASSAR UM INTEIRO QUE É O NUMERO DE GRUPOS
     
     KMeansLloyd<NumberVector> km = new KMeansLloyd<>(dist, //
     3 /* k - number of partitions */, //
     0 /* maximum number of iterations: no limit */, init);
     
     KMeansQualityMeasure qm = new WithinClusterMeanDistanceQualityMeasure() ;
+    
+    // PARAMETRIZAR COM UM VALOR INTEIRO O NUMERO DE RODADAS (5000)
             
     BestOfMultipleKMeans<NumberVector,KMeansModel> bmr = new BestOfMultipleKMeans<>(5000, km, qm);
     
     
     
-    Clustering<KMeansModel> c = bmr.run(db);
+    Clustering<KMeansModel> c = bmr.run(db); // AQUI ELE RODA TUDO
+    
+    // ARRALIST PARA ESCOLHER UM AVALIADOR...PASSO QUAIS PODEM SER
     
     EvaluateSimplifiedSilhouette ss = new EvaluateSimplifiedSilhouette(dist, NoiseHandling.TREAT_NOISE_AS_SINGLETONS, false);
     
@@ -126,6 +156,7 @@ public class ClustererELKI {
     System.out.println("Valor da Silhueta : " + String.format("%.2f", result));
 
             
+    // DAQUI PRA BAIXO NÃO PRECISA MEXER
     
     // Textbook k-means clustering:
     
